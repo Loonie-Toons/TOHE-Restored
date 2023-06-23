@@ -1082,8 +1082,7 @@ public static class Options
         DarkHide.SetupCustomOption(); //TOH_Y
         Virus.SetupCustomOption();
         Wraith.SetupCustomOption();
-
-
+        
 
 
         // Add-Ons
@@ -1319,6 +1318,7 @@ public static class Options
         .SetParent(CustomRoleSpawnChances[CustomRoles.Revolutionist])
             .SetValueFormat(OptionFormat.Seconds);
         SetupRoleOptions(5051412, TabGroup.OtherRoles, CustomRoles.Provocateur);
+        Amor.SetupCustomOption();
 
         // 副职
         TextOptionItem.Create(909096_0, "OtherRoles.Addons", TabGroup.OtherRoles)

@@ -92,6 +92,7 @@ enum CustomRPC
     SetCurrentRevealTarget,
     SetJackalRecruitLimit,
     SetBloodhoundArrow,
+    SetAmorMatchmakeLimit,
 
     //SoloKombat
     SyncKBPlayer,
@@ -485,6 +486,9 @@ internal class RPCHandlerPatch
             case CustomRPC.SetBloodhoundArrow:
                 Bloodhound.ReceiveRPC(reader);
                 break;
+            case CustomRPC.SetAmorMatchmakeLimit:
+                Amor.ReceiveRPC(reader);
+                break;
         }
     }
 }
@@ -830,6 +834,9 @@ internal static class RPC
                 break;
             case CustomRoles.NSerialKiller:
                 NSerialKiller.Add(targetId);
+                break;
+            case CustomRoles.Amor:
+                Amor.Add(targetId);
                 break;
         }
         HudManager.Instance.SetHudActive(true);

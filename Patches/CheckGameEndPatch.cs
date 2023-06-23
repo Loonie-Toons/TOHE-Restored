@@ -145,8 +145,11 @@ class GameEndChecker
                 //恋人抢夺胜利
                 else if (CustomRolesHelper.RoleExist(CustomRoles.Lovers) && !reason.Equals(GameOverReason.HumansByTask))
                 {
-                    if (!(!Main.LoversPlayers.ToArray().All(p => p.IsAlive()) && Options.LoverSuicide.GetBool()))
+                    if(!(!Main.LoversPlayers.ToArray().All(p => p.IsAlive()) && Options.LoverSuicide.GetBool()) ||
+                       !(!Amor.Lovers.ToArray().All(p => p.IsAlive()) && Amor.LoversSuicide.GetBool()))
                     {
+                        Logger.Info("Amor.Lovers.ToArray().All(p => p.IsAlive()", "TEST_Amor_Win");
+
                         if (CustomWinnerHolder.WinnerTeam is CustomWinner.Crewmate or CustomWinner.Impostor or CustomWinner.Jackal or CustomWinner.Pelican)
                         {
                             CustomWinnerHolder.ResetAndSetWinner(CustomWinner.Lovers);
@@ -215,7 +218,6 @@ class GameEndChecker
                     }
                 }
                 
-
                 //FFF
                 if (CustomWinnerHolder.WinnerTeam != CustomWinner.Lovers && !CustomWinnerHolder.AdditionalWinnerTeams.Contains(AdditionalWinners.Lovers) && !CustomRolesHelper.RoleExist(CustomRoles.Lovers) && !CustomRolesHelper.RoleExist(CustomRoles.Ntr))
                 {
@@ -278,9 +280,14 @@ class GameEndChecker
                                 .Where(p => p.Is(CustomRoles.Lovers) && !CustomWinnerHolder.WinnerIds.Contains(p.PlayerId))
                                 .Do(p => CustomWinnerHolder.WinnerIds.Add(p.PlayerId));
                 }
-                
 
+                if (Amor.IsEnable && (CustomWinnerHolder.WinnerTeam == CustomWinner.Lovers || CustomWinnerHolder.AdditionalWinnerTeams.Contains(AdditionalWinners.Lovers)))
+                {
+                    CustomWinnerHolder.AdditionalWinnerTeams.Add(AdditionalWinners.Amor);
+                    CustomWinnerHolder.WinnerIds.Add(Amor.PlayerId);
+                }
             }
+
             ShipStatus.Instance.enabled = false;
             StartEndGame(reason);
             predicate = null;
@@ -419,10 +426,14 @@ class GameEndChecker
                 reason = GameOverReason.ImpostorByKill;
                 CustomWinnerHolder.ResetAndSetWinner(CustomWinner.None);
             }
-            else if (Main.AllAlivePlayerControls.All(p => p.Is(CustomRoles.Lovers))) //恋人胜利
+            else if (Main.AllAlivePlayerControls.All(p => p.Is(CustomRoles.Lovers) || p.Is(CustomRoles.Amor))) //恋人胜利
             {
                 reason = GameOverReason.ImpostorByKill;
                 CustomWinnerHolder.ResetAndSetWinner(CustomWinner.Lovers);
+                if (Amor.IsEnable)
+                {
+                    CustomWinnerHolder.AdditionalWinnerTeams.Add(AdditionalWinners.Amor);
+                }
             }
             else if (Jackal == 0 && Pel == 0 && Gam == 0 && Vamp == 0 && DH == 0 && Rogue == 0 && Juggy == 0 && Wraith == 0 && SK == 0 && Hex == 0 && BK == 0 && Pois == 0 && Virus == 0 && CM == 0 && Crew <= Imp) //内鬼胜利
             {
